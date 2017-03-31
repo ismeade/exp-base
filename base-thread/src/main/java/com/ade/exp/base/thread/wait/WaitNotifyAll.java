@@ -17,6 +17,7 @@ public class WaitNotifyAll {
         new Thread(new Test("a")).start();
         new Thread(new Test("b")).start();
         new Thread(new Test("c")).start();
+        new Thread(new NotifyAll()).start();
     }
 
 }
@@ -34,15 +35,8 @@ class Test implements Runnable {
         synchronized (WaitNotifyAll.obj) {
             while (true) {
                 try {
-                    WaitNotifyAll.count++;
-                    System.out.println("开始等待 " + WaitNotifyAll.count);
-                    if (WaitNotifyAll.count == 3) {
-                        WaitNotifyAll.count = 0;
-                        TimeUnit.MILLISECONDS.sleep(1000);
-                        WaitNotifyAll.obj.notifyAll();
-                    } else {
-                        WaitNotifyAll.obj.wait(); // 在这等待
-                    }
+                    System.out.println("开始等待 " + WaitNotifyAll.obj);
+                    WaitNotifyAll.obj.wait(); // 在这等待
                     System.out.println(name);
                 } catch (Exception e) {
                     System.out.println(e.getLocalizedMessage());
@@ -51,4 +45,24 @@ class Test implements Runnable {
             }
         }
     }
+}
+
+class NotifyAll implements Runnable {
+
+    @Override
+    public synchronized void run() {
+        while (true) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+                synchronized (WaitNotifyAll.obj) {
+                    System.out.println("唤醒其他线程 " + WaitNotifyAll.obj);
+                    WaitNotifyAll.obj.notifyAll();
+                }
+            } catch (Exception e) {
+                System.out.println(e.getLocalizedMessage());
+                return;
+            }
+        }
+    }
+
 }
