@@ -1,6 +1,8 @@
 package com.ade.exp.base.thread.count;
 
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -13,11 +15,12 @@ public class CyclicBarrierExp {
     public static void main(String[] args) throws InterruptedException {
         // 同步计数器的技术周期为3, 每当凑够3个线程cyclicBarrier.await()后，放行该3个线程，最后不足3个时会一直wait
         CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
 
         // 启动子线程，处理“其他”业务
         for (int index = 0; index < 10; index++) {
             TimeUnit.SECONDS.sleep(1);
-            new Thread(() -> {
+            executorService.execute(() -> {
                 try {
                     System.out.println("线程准备就绪.");
                     cyclicBarrier.await();
@@ -25,8 +28,9 @@ public class CyclicBarrierExp {
                     System.out.println(e.getLocalizedMessage());
                 }
                 System.out.println(Thread.currentThread().getName() + "开始执行");
-            }).start();
+            });
         }
+        executorService.shutdown();
     }
 
 }
