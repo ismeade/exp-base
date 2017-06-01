@@ -1,7 +1,6 @@
 package com.ade.exp.base.thread.count;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 使线程进入wait，当CountDownLatch值count==0时，唤醒所有await的线程
@@ -13,19 +12,20 @@ public class CountDownLatchExp {
 
     private static final int COUNT = 20;
 
+    private final static ExecutorService executorService = Executors.newFixedThreadPool(5);
+
     public static void main(String[] args) throws InterruptedException {
 
         CountDownLatch countDownLatch = new CountDownLatch(COUNT);
 
         for (int i = 0; i < COUNT; i++) {
-            new Thread(new Client(countDownLatch)).start();
+           executorService.execute(new Client(countDownLatch));
         }
 
-        TimeUnit.SECONDS.sleep(5);
+        countDownLatch.await(); // 等待，直到线程发出信号量达到COUNT时唤醒
 
-        while (countDownLatch.getCount() > 0) {
-            countDownLatch.countDown();
-        }
+        System.out.println("wake up");
+        executorService.shutdown();
     }
 
 }
@@ -41,8 +41,10 @@ class Client implements Runnable {
     @Override
     public void run() {
         try {
-            countDownLatch.await();
-            System.out.println("wake up");
+            // do something
+            TimeUnit.SECONDS.sleep(1);
+            countDownLatch.countDown(); // 线程完成工作后发出一个信号量
+            System.out.println(countDownLatch.getCount());
         } catch (InterruptedException e) {
             System.out.println(e.getLocalizedMessage());
         }

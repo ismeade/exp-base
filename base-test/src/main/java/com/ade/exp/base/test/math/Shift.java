@@ -32,8 +32,27 @@ public class Shift {
         System.out.println(x + " " + y);
 
         // 余运算 a % 2 == a & 1
-        System.out.println(10 & 1);
+        System.out.println(20 & 1);
 
+        System.out.println(2 ^ 2);
+
+        System.out.println("----------------------");
+
+//        int a = 555555;
+//        long start = System.currentTimeMillis();
+//        for (int i = 0; i < 100000000; i++) {
+//            if ((a & 1) == 0) {
+//                System.out.println("o");
+//            }
+//        }
+//        System.out.println(System.currentTimeMillis() - start);
+        int[] count = {0, 0, 0, 0};
+        for (int i = 0; i < 100; i++) {
+            count[i & 3]++;
+        }
+        for (int aCount : count) {
+            System.out.println(aCount);
+        }
     }
 
 }
