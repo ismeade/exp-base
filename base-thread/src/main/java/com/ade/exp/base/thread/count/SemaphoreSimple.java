@@ -1,9 +1,6 @@
 package com.ade.exp.base.thread.count;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 信号量锁，Semaphore保存一定数量的信号量，每个线程获取一个信号量，完成业务后释放信号量，信号量发完将不能获取信号量，线程将阻塞
